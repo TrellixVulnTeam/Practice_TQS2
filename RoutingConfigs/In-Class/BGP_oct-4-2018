@@ -1,0 +1,465 @@
+R1
+---
+Conf t
+int lo0
+ip add 10.0.1.1 255.255.255.255
+int f1/0
+ip add 192.168.1.1 255.255.255.0
+int f0/1
+ip add 10.0.21.1 255.255.255.252
+int f0/0
+ip add 10.0.11.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f2/0-1 
+no shut
+exit
+
+router ospf 1
+router-id 10.0.1.1
+network 10.0.1.1 0.0.0.0 area 0
+network 192.168.1.0 0.0.0.255 area 0
+network 10.0.21.0 0.0.0.3 area 0
+
+router bgp 65012
+network 192.168.1.0
+network 192.168.2.0
+neigh 10.0.21.2 remote-as 65012
+neigh 10.0.21.2 next-hop-self
+neigh 10.0.11.2 remote-as 144
+end
+
+
+R2
+---
+Conf t
+int lo0
+ip add 10.0.2.2 255.255.255.255
+int f1/0
+ip add 192.168.2.1 255.255.255.0
+int f0/1
+ip add 10.0.21.2 255.255.255.252
+int f0/0
+ip add 10.0.12.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f2/0-1 
+no shut
+exit
+
+router ospf 1
+router-id 10.0.2.2
+network 10.0.2.2 0.0.0.0 area 0
+network 192.168.2.0 0.0.0.255 area 0
+network 10.0.21.0 0.0.0.3 area 0
+
+router bgp 65012
+network 192.168.1.0
+network 192.168.2.0
+neigh 10.0.21.1 remote-as 65012
+neigh 10.0.21.1 next-hop-self
+neigh 10.0.12.2 remote-as 144
+end
+
+
+R3
+---
+Conf t
+int lo0
+ip add 10.0.3.3 255.255.255.255
+int f1/0
+ip add 192.168.3.1 255.255.255.0
+int f0/1
+ip add 10.0.33.1 255.255.255.252
+int f0/0
+ip add 10.0.23.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f2/0-1 
+no shut
+exit
+
+router bgp 65003
+network 192.168.3.0
+neigh 10.0.23.2 remote-as 144
+neigh 10.0.33.2 remote-as 144
+end
+
+
+R4
+---
+conf t
+int lo0
+ip add 10.0.4.4 255.255.255.255
+int f0/1
+ip add 192.168.4.1 255.255.255.0
+int f0/0
+ip add 10.0.44.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f2/0-1 
+no shut
+exit
+
+router bgp 65004
+network 192.168.4.0
+neigh 10.0.44.2 remote-as 144
+end
+
+
+R5
+---
+conf t
+int lo0
+ip add 10.0.5.5 255.255.255.255
+int f0/1
+ip add 192.168.5.1 255.255.255.0
+int f0/0
+ip add 10.0.75.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f2/0-1 
+no shut
+exit
+
+router bgp 65005
+network 192.168.5.0
+neigh 10.0.75.2 remote-as 144
+end
+
+
+R6
+---
+conf t
+int lo0
+ip add 10.0.6.6 255.255.255.255
+int f0/1
+ip add 192.168.6.1 255.255.255.0
+int f0/0
+ip add 10.0.66.2 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f2/0-1 
+no shut
+exit
+
+router bgp 65006
+network 192.168.6.0
+neigh 10.0.66.1 remote-as 144
+end
+
+
+R7
+---
+conf t
+int lo0
+ip add 10.0.7.7 255.255.255.255
+int f0/1
+ip add 192.168.7.1 255.255.255.0
+int f0/0
+ip add 10.0.97.2 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f2/0-1 
+no shut
+exit
+
+router bgp 65007
+network 192.168.7.0
+neigh 10.0.97.1 remote-as 144
+end
+
+
+J1
+---
+edit interfaces
+  set lo0.0 family inet address 10.1.1.1/32
+  set em0.0 family inet address 10.0.11.2/30
+  set em1.0 family inet address 10.0.12.2/30
+  set em2.0 family inet address 10.0.12.1/30
+  set em2.0 family mpls
+  set em3.0 family inet address 10.0.14.1/30
+  set em3.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em2.0
+set protocols ldp interface em3.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em2.0
+set protocols ospf area 0 interface em3.0
+commit and-quit
+
+
+J2
+---
+edit interfaces
+  set lo0.0 family inet address 10.2.2.2/32
+  set em0.0 family inet address 10.0.23.2/30
+  set em1.0 family inet address 10.0.23.1/30
+  set em1.0 family mpls
+  set em2.0 family inet address 10.0.12.2/30
+  set em2.0 family mpls
+  set em3.0 family inet address 10.0.25.1/30
+  set em3.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em2.0
+set protocols ldp interface em3.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em1.0
+set protocols ospf area 0 interface em2.0
+set protocols ospf area 0 interface em3.0
+commit and-quit
+
+
+J3
+---
+edit interfaces
+  set lo0.0 family inet address 10.3.3.3/32
+  set em0.0 family inet address 10.0.33.2/30
+  set em1.0 family inet address 10.0.23.2/30
+  set em1.0 family mpls
+  set em2.0 family inet address 10.0.36.1/30
+  set em2.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em2.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em1.0
+set protocols ospf area 0 interface em2.0
+commit and-quit
+
+
+J4
+---
+edit interfaces
+  set lo0.0 family inet address 10.4.4.4/32
+  set em0.0 family inet address 10.0.44.2/30
+  set em1.0 family inet address 10.0.14.2/30
+  set em1.0 family mpls
+  set em2.0 family inet address 10.0.47.1/30
+  set em2.0 family mpls
+  set em3.0 family inet address 10.0.45.1/30
+  set em3.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em2.0
+set protocols ldp interface em3.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em1.0
+set protocols ospf area 0 interface em2.0
+set protocols ospf area 0 interface em3.0
+commit and-quit
+
+
+J5
+---
+edit interfaces
+  set lo0.0 family inet address 10.5.5.5/32
+  set em0.0 family inet address 10.0.45.2/30
+  set em0.0 family mpls
+  set em1.0 family inet address 10.0.56.1/30
+  set em1.0 family mpls
+  set em2.0 family inet address 10.0.25.2/30
+  set em2.0 family mpls
+  set em3.0 family inet address 10.0.58.1/30
+  set em3.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em2.0
+set protocols ldp interface em3.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em0.0
+set protocols ospf area 0 interface em1.0
+set protocols ospf area 0 interface em2.0
+set protocols ospf area 0 interface em3.0
+commit and-quit
+
+
+J6
+---
+edit interfaces
+  set lo0.0 family inet address 10.6.6.6/32
+  set em0.0 family inet address 10.0.56.2/30
+  set em0.0 family mpls
+  set em1.0 family inet address 10.0.36.2/30
+  set em1.0 family mpls
+  set em2.0 family inet address 10.0.66.1/30
+  set em3.0 family inet address 10.0.69.1/30
+  set em3.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em3.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em0.0
+set protocols ospf area 0 interface em1.0
+set protocols ospf area 0 interface em3.0
+commit and-quit
+
+
+J7
+---
+edit interfaces
+  set lo0.0 family inet address 10.7.7.7/32
+  set em0.0 family inet address 10.0.75.2/30
+  set em1.0 family inet address 10.0.47.2/30
+  set em1.0 family mpls
+  set em2.0 family inet address 10.0.78.1/30
+  set em2.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em2.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em1.0
+set protocols ospf area 0 interface em2.0
+# BGP
+set routing-options router-id 10.7.7.7 autonomous-system 144
+edit protocol bgp group VPN-C
+  set type internal
+  set family inet-vpn unicast
+  set local-address 10.7.7.7
+  set neighbor 10.9.9.9 peer-as 144
+top
+# VRF
+edit routing-instances VPN-C
+  set instance-type vrf
+  set vrf-table-label source-class-usage
+  set interface em0.0
+  set route-distinguisher 144:65005
+  set vrf-export LOCAL
+  set vrf-import REMOTE
+  set protocols bgp group CUSTOMER type external neighbor 10.0.75.1 peer-as 65005
+top
+# POLICIES
+edit policy-options policy-statement LOCAL
+  set term 1 from protocol bgp 
+  set term 1 then community add LOCAL-COMM
+  set term 1 then accept
+  set term 2 then reject
+top
+edit policy-options policy-statement REMOTE
+  set term 1 from protocol bgp
+  set term 1 from community REMOTE-COMM
+  set term 1 then accept
+  set term 2 then reject
+top
+
+set policy-options community LOCAL-COMM members target:144:65005
+set policy-options community REMOTE-COMM members target:144:65007
+
+commit and-quit
+
+
+J8
+---
+edit interfaces
+  set lo0.0 family inet address 10.8.8.8/32
+  set em0.0 family inet address 10.0.78.2/30
+  set em0.0 family mpls 
+  set em1.0 family inet address 10.0.89.1/30
+  set em1.0 family mpls
+  set em2.0 family inet address 10.0.58.2/30
+  set em2.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em2.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em0.0
+set protocols ospf area 0 interface em1.0
+set protocols ospf area 0 interface em2.0
+commit and-quit
+
+
+J9
+---
+edit interfaces
+  set lo0.0 family inet address 10.9.9.9/32
+  set em0.0 family inet address 10.0.89.2/30
+  set em0.0 family mpls 
+  set em1.0 family inet address 10.0.97.1/30
+  set em2.0 family inet address 10.0.69.2/30
+  set em2.0 family mpls
+top
+
+# MPLS
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em0.0
+set protocols ldp interface em2.0
+# OSPF
+set protocols ospf area 0 interface lo0
+set protocols ospf area 0 interface em0.0
+set protocols ospf area 0 interface em2.0
+# BGP
+set routing-options router-id 10.9.9.9 autonomous-system 144
+edit protocol bgp group VPN-C
+  set type internal
+  set family inet-vpn unicast
+  set local-address 10.9.9.9
+  set neighbor 10.7.7.7 peer-as 144
+top
+# VRF
+edit routing-instances VPN-C
+  set instance-type vrf
+  set vrf-table-label source-class-usage
+  set interface em1.0
+  set route-distinguisher 144:65007
+  set vrf-export LOCAL
+  set vrf-import REMOTE
+  set protocols bgp group CUSTOMER type external neighbor 10.0.97.2 peer-as 65007
+top
+# POLICIES
+edit policy-options policy-statement LOCAL
+  set term 1 from protocol bgp 
+  set term 1 then community add LOCAL-COMM
+  set term 1 then accept
+  set term 2 then reject
+top
+edit policy-options policy-statement REMOTE
+  set term 1 from protocol bgp
+  set term 1 from community REMOTE-COMM
+  set term 1 then accept
+  set term 2 then reject
+top
+
+set policy-options community LOCAL-COMM members target:144:65007
+set policy-options community REMOTE-COMM members target:144:65005
+
+commit and-quit
