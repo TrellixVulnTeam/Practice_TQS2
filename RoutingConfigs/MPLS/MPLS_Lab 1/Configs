@@ -1,0 +1,477 @@
+Router 1 
+===
+conf t
+int lo0
+ip add 172.0.0.1 255.255.255.255
+int f0/0
+ip add 10.0.12.1 255.255.255.252
+int f0/1
+ip add 10.0.13.1 255.255.255.252
+int f1/0
+ip add 10.0.10.1 255.255.255.252
+int f1/1
+ip add 10.0.19.1 255.255.255.252
+int f2/0
+ip add 10.0.18.1 255.255.255.252
+int f2/1
+ip add 10.0.14.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1
+no shut 
+int range f0/0, f2/1, f0/1
+ip router isis EXAMPLE
+exit
+# ISIS
+router isis EXAMPLE
+log-adjacency-changes
+net 49.0000.0000.0000.0001.00
+
+end
+
+
+Router 2 
+===
+conf t
+int lo0
+ip add 172.0.0.2 255.255.255.255
+int f0/0
+ip add 10.0.12.2 255.255.255.252
+int f0/1
+ip add 10.0.24.1 255.255.255.252
+int f1/0
+ip add 10.0.11.1 255.255.255.252
+!!!int f1/1
+!!!ip add 10.0.12.1 255.255.255.252
+int f2/0
+ip add 10.0.23.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+int range f0/0, f2/0, f0/1
+ip router isis EXAMPLE
+exit
+# ISIS
+router isis EXAMPLE
+log-adjacency-changes
+net 49.0000.0000.0000.0002.00
+
+end
+
+Router 3 
+===
+conf t
+int lo0
+ip add 172.0.0.3 255.255.255.255
+int f0/0
+ip add 10.0.34.1 255.255.255.252
+int f0/1
+ip add 10.0.13.2 255.255.255.252
+int f1/0
+ip add 10.0.37.1 255.255.255.252
+!!!int f1/1
+!!!ip add 10.0.12.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+int range f0/1, f0/0
+ip router isis EXAMPLE
+exit
+# ISIS
+router isis EXAMPLE
+log-adjacency-changes
+net 49.0000.0000.0000.0003.00
+
+end
+
+
+Router 4 
+===
+conf t
+int lo0
+ip add 172.0.0.4 255.255.255.255
+int f0/0
+ip add 10.0.34.2 255.255.255.252
+int f0/1
+ip add 10.0.24.2 255.255.255.252
+!!!int f1/0
+!!!ip add 10.0.37.1 255.255.255.252
+int f1/1
+ip add 10.0.14.2 255.255.255.252
+int f2/0
+ip add 10.0.45.1 255.255.255.252
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+int range f0/0, f1/1, f0/1, f2/0
+ip router isis EXAMPLE
+exit
+# ISIS
+router isis EXAMPLE
+log-adjacency-changes
+net 49.0000.0000.0000.0004.00
+
+end
+
+
+Router 6
+===
+
+
+Router 7 
+===
+conf t
+int lo0
+ip add 172.0.0.7 255.255.255.255
+int f0/0
+ip add 10.0.37.2 255.255.255.252
+int f0/1
+ip add 192.168.7.1 255.255.255.0
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+end
+
+
+Router 8 
+===
+conf t
+int lo0
+ip add 172.0.0.8 255.255.255.255
+int f0/0
+ip add 10.0.18.2 255.255.255.252
+int f0/1
+ip add 192.168.8.1 255.255.255.0
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+end
+
+
+Router 9 
+===
+conf t
+int lo0
+ip add 172.0.0.9 255.255.255.255
+int f0/0
+ip add 10.0.19.2 255.255.255.252
+int f0/1
+ip add 192.168.9.1 255.255.255.0
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+end
+
+
+Router 10 
+===
+conf t
+int lo0
+ip add 172.0.0.10 255.255.255.255
+int f0/0
+ip add 10.0.10.2 255.255.255.252
+int f0/1
+ip add 192.168.10.1 255.255.255.0
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+end
+
+
+Router 11
+===
+conf t
+int lo0
+ip add 172.0.0.11 255.255.255.255
+int f0/0
+ip add 10.0.19.2 255.255.255.252
+int f0/1
+ip add 192.168.9.1 255.255.255.0
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+end
+
+
+Router 12
+===
+conf t
+int lo0
+ip add 172.0.0.12 255.255.255.255
+int f0/0
+ip add 10.0.19.2 255.255.255.252
+
+int range f0/0-1, f1/0-1, f2/0-1, f3/0-1
+no shut 
+end
+
+
+Juniper 13
+===
+set system hostname J13
+set interfaces lo0.0 family inet address 172.0.0.13/32
+set interfaces lo0.0 family iso address 49.0000.0000.0000.00013.00
+set interfaces em0.0 family inet address 10.0.24.1/30
+set interfaces em1.0 family mpls
+set interfaces em1.0 family inet address 10.0.23.2/30
+set interfaces em1.0 family iso mtu 1492
+set interfaces em2.0 family mpls
+set interfaces em2.0 family inet address 10.0.43.1/30
+set interfaces em1.0 family mpls
+set interfaces em3.0 family inet address 10.0.53.1/30
+set interfaces em3.0 family iso mtu 1492
+###set interfaces em4.0 family inet address 10.0.23.1/30
+# ISIS and MPLS
+set protocols isis interface lo0.0
+set protocols isis interface em1.0
+set protocols isis interface em3.0
+set protocols isis interface em2.0
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em2.0
+set protocols ldp interface em3.0
+
+# BGP
+set routing-options router-id 172.0.0.14 autonomous-system 3356
+edit protocols bgp group CDN_TIRE
+	set type internal
+	set local-address 172.0.0.16
+	set family inet-vpn any
+	set neighbor 172.0.0.14
+top
+# VRF
+edit routing-instances CDN_TIRE_VRF
+	set instance-type vrf
+	set vrf-table-label source-class-usage
+	set interface em4.0
+	set route-distinguisher 172.0.0.16:1
+	#set vrf-target target 22:20
+	set routing-instances CDN_TIRE_VRF protocols rip group RIP_GROUP neighbor em4.0
+top
+# POLICIES
+edit policy-options policy-statement J20_TO_J22
+	set term 1 from protocol rip
+	set term 1 then community add J20_TO_J22_CS
+	set term 1 then accept
+top
+edit policy-options policy-statement J20_TO_J22
+	set term 1 from protocol bgp
+	set term 1 from community J22_TO_J20_CS
+	set term 1 then accept
+top
+set policy-options community J20_TO_J22_CS members target:172.0.0.14:1
+set policy-options community J22_TO_J20_CS members target:172.0.0.16:1
+
+
+Juniper 14
+===
+set system host-name J14
+set interfaces lo0.0 family inet address 172.0.0.14/32
+set interfaces lo0.0 family iso address 49.0000.0000.0000.0014.00
+set interfaces em0.0 family mpls
+set interfaces em0.0 family inet address 10.0.43.2/30
+set interfaces em0.0 family iso mtu 1492
+set interfaces em1.0 family mpls
+set interfaces em1.0 family inet address 10.0.45.1/30
+set interfaces em1.0 family iso mtu 1492
+set interfaces em2.0 family mpls
+set interfaces em2.0 family inet address 10.0.64.1/30
+set interfaces em2.0 family iso mtu 1492
+set interfaces em3.0 family inet address 10.0.21.1/30
+set interfaces em4.0 family inet address 10.0.22.1/30
+# ISIS and MPLS
+set protocols isis interface lo0.0
+set protocols isis interface em0.0
+set protocols isis interface em1.0
+set protocols isis interface em2.0
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em0.0
+set protocols ldp interface em1.0
+set protocols ldp interface em2.0
+# BGP
+set routing-options router-id 172.0.0.14 autonomous-system 3356
+edit protocols bgp group CDN_TIRE
+	set type internal
+	set local-address 172.0.0.14
+	set family inet-vpn any
+	set neighbor 172.0.0.16
+top
+# VRF
+edit routing-instances CDN_TIRE_VRF
+	set instance-type vrf
+	set vrf-table-label source-class-usage
+	set interface em4.0
+	set route-distinguisher 172.0.0.14:1
+	set vrf-target target:22:20
+	set routing-instances CDN_TIRE_VRF protocols rip group RIP_GROUP neighbor em4.0
+	set protocols rip group RIP_GROUP export J20_TO_J22
+top
+# POLICIES
+edit policy-options policy-statement J20_TO_J22
+	set term 1 from protocol bgp
+	set term 1 from community J20_TO_J22_CS
+	set term 1 then accept
+top
+edit policy-options policy-statement J22_TO_J20
+	set term 1 from protocol rip
+	set term 1 then community add J22_TO_J20_CS
+	set term 1 then accept
+top
+set policy-options community J20_TO_J22_CS members target:172.0.0.14:1
+set policy-options community J22_TO_J20_CS members target:172.0.0.16:1
+
+
+Juniper 15
+===
+set system host-name J15
+set interfaces lo0.0 family inet address 172.0.0.15/32
+set interfaces lo0.0 family iso address 49.0000.0000.0000.0015.00
+set interfaces em0.0 family mpls
+set interfaces em0.0 family inet address 10.0.45.2/30
+set interfaces em0.0 family iso mtu 1492
+set interfaces em1.0 family mpls
+set interfaces em1.0 family inet address 10.0.65.1/30
+set interfaces em1.0 family iso mtu 1492
+set interfaces em2.0 family mpls
+set interfaces em2.0 family inet address 10.0.45.2/30
+set interfaces em3.0 family inet address 10.0.53.2/30
+set interfaces em3.0 family mpls
+set interfaces em3.0 family iso mtu 1492
+###set interfaces em4.0 family inet address 99.99.99.99/30
+# ISIS and MPLS
+set protocols isis interface lo0.0
+set protocols isis interface em0.0
+set protocols isis interface em3.0
+set protocols isis interface em1.0
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em0.0
+set protocols ldp interface em3.0
+set protocols ldp interface em2.0
+set protocols ldp interface em1.0
+
+
+Juniper 16
+===
+set system host-name J16
+set interfaces lo0.0 family inet address 172.0.0.16/32
+set interfaces lo0.0 family iso address 49.0000.0000.0000.0016.00
+set interfaces em0.0 family mpls
+set interfaces em0.0 family inet address 10.0.64.2/30
+set interfaces em0.0 family iso mtu 1492
+set interfaces em1.0 family mpls
+set interfaces em1.0 family inet address 10.0.65.2/30
+set interfaces em1.0 family iso mtu 1492
+###set interfaces em2.0 family inet address 99.99.99.99/30
+set interfaces em3.0 family inet address 10.0.19.1/30
+set interfaces em4.0 family inet address 10.0.20.1/30
+# ISIS and MPLS
+set protocols isis interface lo0.0
+set protocols isis interface em0.0
+set protocols isis interface em1.0
+set protocols mpls interface all
+# LDP
+set protocols ldp interface lo0.0
+set protocols ldp interface em0.0
+set protocols ldp interface em1.0
+# BGP
+set routing-options router-id 172.0.0.16 autonomous-system 3356
+edit protocols bgp group CDN_TIRE
+	set type internal
+	set local-address 172.0.0.16
+	set family inet-vpn any
+	set neighbor 172.0.0.14
+top
+# VRF
+edit routing-instances CDN_TIRE_VRF
+	set instance-type vrf
+	set vrf-table-label source-class-usage
+	set interface em4.0
+	set route-distinguisher 172.0.0.16:1
+	set vrf-target target:22:20
+	set routing-instances CDN_TIRE_VRF protocols rip group RIP_GROUP neighbor em4.0
+	set routing-instances CDN_TIRE_VRF protocols rip group RIP_GROUP import J22_TO_J20
+top
+# POLICIES
+edit policy-options policy-statement J20_TO_J22
+	set term 1 from protocol rip
+	set term 1 then community add J20_TO_J22_CS
+	set term 1 then accept
+top
+edit policy-options policy-statement J22_TO_J20
+	set term 1 from protocol bgp
+	set term 1 from community J22_TO_J20_CS
+	set term 1 then accept
+top
+set policy-options community J20_TO_J22_CS members target:172.0.0.14:1
+set policy-options community J22_TO_J20_CS members target:172.0.0.16:1
+
+Juniper 17
+===
+set interfaces lo0.0 family inet address 172.0.0.17/32
+###set interfaces em0.0 family inet address 99.99.99.99/30
+###set interfaces em1.0 family inet address 99.99.99.99/30
+set interfaces em2.0 family inet address 208.94.172.1/23
+
+
+Juniper 18
+===
+set interfaces lo0.0 family inet address 172.0.0.18/32
+###set interfaces em0.0 family inet address 99.99.99.99/30
+###set interfaces em1.0 family inet address 99.99.99.99/30
+set interfaces em2.0 family inet address 208.94.173.1/23
+
+
+Juniper 19
+===
+set interfaces lo0.0 family inet address 172.0.0.19/32
+set interfaces em0.0 family inet address 10.0.19.2/30
+set interfaces em1.0 family inet address 192.168.19.1/24
+
+
+Juniper 20
+===
+set system host-name J20
+set interfaces lo0.0 family inet address 172.0.0.20/32
+set interfaces em0.0 family inet address 10.0.20.2/30
+set interfaces em1.0 family inet address 192.168.20.1/24 
+# RIP
+edit protocols rip group RIP-GROUP
+	set neighbor em0.0
+top
+edit policy-options policy-statement advertise-routes-through-rip term 1
+	set from protocol rip
+	set then accept
+top
+set protocols rip group RIP_GROUP export advertise-routes-through-rip neighbor em0.0
+top
+
+Juniper 21
+===
+set interfaces lo0.0 family inet address 172.0.0.21/32
+set interfaces em0.0 family inet address 10.0.21.2/30
+set interfaces em1.0 family inet address 192.168.21.1/24 
+
+Juniper 22
+===
+set system host-name J22
+set interfaces lo0.0 family inet address 172.0.0.22/32
+set interfaces em0.0 family inet address 10.0.22.2/30
+set interfaces em1.0 family inet address 192.168.22.1/24 
+# RIP
+edit policy-options policy-statement advertise-routes-through-rip term 1
+	set from protocol rip
+	set then accept
+top
+set protocols rip group RIP_GROUP export advertise-routes-through-rip neighbor em0.0
+top
+
+Juniper 23
+===
+set system host-name J23
+set interfaces lo0.0 family inet address 172.0.0.23/32
+set interfaces em0.0 family inet address 10.0.23.2/30
+set interfaces em1.0 family inet address 192.168.23.1/24 
+set protocols ospf area 0 interface em1.0
+
+
+Juniper 24
+===
+set interfaces lo0.0 family inet address 172.0.0.24/32
+set interfaces em0.0 family inet address 10.0.24.2/30
+set interfaces em1.0 family inet address 192.168.19.1/24 
