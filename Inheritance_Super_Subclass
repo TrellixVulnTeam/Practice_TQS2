@@ -1,0 +1,68 @@
+class Employee:
+
+  raise_amt = 1.04
+
+  def __init__(self, first, last, pay) -> None:
+    self.first = first
+    self.last = last
+    self.pay = pay
+    self.email = first + "." + last + "@email.com"
+
+  def fullname(self):
+    return "{} {}".format(self.first, self.last)
+
+  def apply_raise(self):
+    self.pay = int(self.pay * self.raise_amt)
+
+
+class Developer(Employee):
+  raise_amt = 1.10
+
+  def __init__(self, first, last, pay, prog_lang) -> None:
+    super().__init__(first, last, pay)
+    self.prog_lang = prog_lang
+
+
+class Manager(Employee):
+
+  def __init__(self, first, last, pay, employee_list=None) -> None:
+    super().__init__(first, last, pay)
+    if employee_list is None:
+      self.employee_list = []
+    else:
+      self.employee_list = employee_list
+  
+  def add_employee(self, employee_name):
+    if employee_name not in self.employee_list:
+      self.employee_list.append(employee_name)
+
+  def remove_employee(self, employee_name):
+    if employee_name in self.employee_list:
+      self.employee_list.remove(employee_name)
+
+  def list_employees(self):
+    for employee in self.employee_list:
+      print("=>", employee.fullname())
+
+dev1 = Developer("Steven", "Lam", 1000, "Python")
+dev2 = Developer("William", "Lam", 10001, "Java")
+print(dev1.pay)
+dev1.apply_raise()
+print(dev1.pay)
+print(dev1.prog_lang)
+
+mgr1 = Manager("Corey", "Schafer", 100000, [dev1])
+print(mgr1.list_employees())
+mgr1.add_employee(dev2)
+print(mgr1.list_employees())
+mgr1.remove_employee(dev1)
+print(mgr1.list_employees())
+
+
+print(isinstance(mgr1, Manager))
+print(isinstance(mgr1, Employee))
+print(isinstance(mgr1, Developer))
+
+print(issubclass(Developer, Employee))
+print(issubclass(Manager, Employee))
+print(issubclass(Manager, Developer))
